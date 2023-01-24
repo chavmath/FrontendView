@@ -37,7 +37,7 @@
                 </div>
 
                 <div class="control">
-                    <button class="button is-success" @click="filtrar()">Buscar</button>
+                    <button class="button is-success" @click="getClients(), filtrar();">Buscar</button>
                 </div>
                 <div v-if="contracts.length > 0">
                     <table class="table is-striped is-bordered mt-2 is-fullwidth">
@@ -50,9 +50,9 @@
                         </thead>
                         <tbody>
                             <tr v-for="item in contracts" :key="item.id_con">
-                                <td>{{ item.id_con }}</td>
-                                <td>{{ item.nombre_con }}</td>
-                                <td>{{ item.monto_con }}</td>
+                                <td>{{ item.id }}</td>
+                                <td>{{ item.cliente }}</td>
+                                <td>{{ item.monto }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -75,11 +75,14 @@ export default {
             contracts: [],
             desde: "",
             hasta: "",
-
+            clients: []
         };
     },
     created() {
         this.getContracts();
+    },
+    mounted(){
+        this.getClients();
     },
     methods: {
         async getContracts() {
@@ -90,7 +93,15 @@ export default {
                 console.log(err);
             }
         },
-        // Create New product
+        async getClients() {
+            try {
+                const response = await axios.get("http://localhost:5000/clients");
+                this.clients = response.data;
+
+            } catch (err) {
+                console.log(err);
+            }
+        },
         async filtrar() {
             try {
                 let data = [];
@@ -100,27 +111,45 @@ export default {
                 // this.desde = "";
                 // this.hasta = "";
                 let cont = response2.data;
-                let conArray = [];
                 let aux = [];
-                //console.log(typeof cont);
+                let contratos = [];
                 for (let i = 0; i < cont.length; i++) {
-                    conArray = [];
                     let montoTotal = 0;
                     for (let j = 0; j < cont.length; j++) {
                         if (cont[i].id_cli == cont[j].id_cli) {
                             montoTotal += cont[j].monto_con;
                         }
                     }
-                    conArray.push(cont[i].id_cli, montoTotal);
-                    console.log(conArray);
-                    aux.push(conArray);
+                    let obj = { id: cont[i].id_cli, monto: montoTotal }
+                    aux.push(obj);
                 }
-                console.log(aux);
-                this.contracts = response2.data;
+
+                for (let i = 0; i < aux.length; i++) {
+                    if (i == 0) {
+                        contratos.push(aux[i]);
+                    } else {
+                        if (aux[i].id != aux[i - 1].id) {
+                            contratos.push(aux[i]);
+                        }
+                    }
+                }
+
+                let clientsArr = this.clients;
+                let clients_contracts = [];
+                for (let i = 0; i < contratos.length; i++) {
+                    for (let j = 0; j < clientsArr.length; j++) {
+                        if(contratos[i].id == clientsArr[j].id_cli){
+                            let obj = {id: contratos[i].id, cliente: clientsArr[j].nombre_cli, monto: contratos[i].monto};
+                            clients_contracts.push(obj);
+                        }                        
+                    }
+                }
+                this.contracts = clients_contracts;
             } catch (err) {
                 console.log(err);
             }
         },
+
     },
 };
 </script>

@@ -34,7 +34,6 @@
     },
     
     methods: {
-      // Get All Products
       async getClients() {
         try {
           const response = await axios.get("http://localhost:5000/clients");
