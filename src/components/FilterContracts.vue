@@ -87,7 +87,7 @@ export default {
     methods: {
         async getContracts() {
             try {
-                const response = await axios.get("http://35.196.173.137:8080/contracts");
+                const response = await axios.get("https://dianacuencaminicoreback.onrender.com/contracts");
                 this.items = response.data;
             } catch (err) {
                 console.log(err);
@@ -95,7 +95,7 @@ export default {
         },
         async getClients() {
             try {
-                const response = await axios.get("http://35.196.173.137:8080/clients");
+                const response = await axios.get("https://dianacuencaminicoreback.onrender.com/clients");
                 this.clients = response.data;
 
             } catch (err) {
@@ -107,7 +107,7 @@ export default {
                 let data = [];
                 data.push(this.desde);
                 data.push(this.hasta);
-                const response2 = await axios.post("http://35.196.173.137:8080/filter/" + data);
+                const response2 = await axios.post("https://dianacuencaminicoreback.onrender.com/filter/" + data);
                 // this.desde = "";
                 // this.hasta = "";
                 let cont = response2.data;
