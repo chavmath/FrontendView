@@ -36,7 +36,7 @@
     methods: {
       async getClients() {
         try {
-          const response = await axios.get("https://dianacuencaminicoreback.onrender.com/clients");
+          const response = await axios.get("https://35.196.173.137:8080/clients");
           this.items = response.data; 
           
         } catch (err) {
